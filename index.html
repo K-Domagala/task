@@ -30,13 +30,16 @@
             <tbody>
                 <tr>
                     <td>
-                        1.
+                        1. Neighbour API
                     </td>
                     <td>
-                        <input id="api1Input" type="text"/>
+                        This API will return the neighbours of any given country.
+                        <br><br>
+                        <label for="api1Input">Country: </label>
+                        <select id="api1Input"></select>
                     </td>
                     <td>
-                        <button id="submit1">submit 1</button>
+                        <button id="submit1">Run API</button>
                     </td>
                 </tr>
                 <tr>
@@ -64,12 +67,13 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3">
+                    <td id='result' colspan="3">
                         result
                     </td>
                 </tr>
             </tfoot>
         </table>
+        <div id=”preloader”></div>
         <script type="application/javascript" src="libs/js/jquery-3.7.1.min.js"></script>
         <script type="application/javascript" src="libs/js/script.js"></script>
     </body>
