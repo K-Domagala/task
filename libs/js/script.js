@@ -8,19 +8,46 @@ $('#submit1').click(function() {
         },
         success: (result) => {
             let resultString = '';
-            resultString += result['data'][0]['countryName']
-            for(let i = 1; i < result['data'].length; i++){
-                resultString += ', ' + result['data'][i]['countryName'];
+            if(!result['data']){
+                $('#result').html('No data found. Try selecting a different country');
+            } else if(!result['data'][0]){
+                $('#result').html('This country has no neighbours');
+            } else {
+                resultString += result['data'][0]['countryName']
+                for(let i = 1; i < result['data'].length; i++){
+                    resultString += ', ' + result['data'][i]['countryName'];
+                }
+                $('#result').html(resultString)
             }
-            $('#result').html(resultString)
         },
         error: (error) => {
-            console.log(error);
-            console.log('something went wrong')
             $('#result').html(error.responseText)
         }
     });
 });
+
+$('#submit2').click(() => {
+    $.ajax({
+        url: 'libs/php/capital.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            country: $('#api2Input').val()
+        },
+        success: (result) => {
+            let resultString = '';
+            if(!result['data']){
+                $('#result').html('No data found. Try selecting a different country');
+            } else {
+                console.log(result)
+                $('#result').html(resultString)
+            }
+        },
+        error: (error) => {
+            $('#result').html(error.responseText)
+        }
+    });
+})
 
 $(window).on('load', function () {
     if ($('#preloader').length) {
@@ -34,11 +61,11 @@ $(window).on('load', function () {
         dataType: 'json',
         success: (result) => {
             let response = ''
-            console.log(result['data'][0]['countryCode'])
             for(let i = 0; i < result['data'].length; i++){
                 response += '<option value=' + result['data'][i]['countryCode'] + '>' + result['data'][i]['countryName'] + '</option>'
             }
             $('#api1Input').html(response)
+            $('#api2Input').html(response)
         },
         error: (error) => {
             console.log(error);
