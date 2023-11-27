@@ -1,4 +1,5 @@
 $('#submit1').click(function() {
+    $('#result').html('Working on it...')
     $.ajax({
         url: 'libs/php/neighbours.php',
         type: 'POST',
@@ -27,6 +28,7 @@ $('#submit1').click(function() {
 });
 
 $('#submit2').click(() => {
+    $('#result').html('Working on it...')
     $.ajax({
         url: 'libs/php/capital.php',
         type: 'POST',
@@ -35,12 +37,11 @@ $('#submit2').click(() => {
             country: $('#api2Input').val()
         },
         success: (result) => {
-            let resultString = '';
             if(!result['data']){
                 $('#result').html('No data found. Try selecting a different country');
             } else {
                 console.log(result)
-                $('#result').html(resultString)
+                $('#result').html(result['data'])
             }
         },
         error: (error) => {

@@ -4,7 +4,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='http://api.geonames.org/neighboursJSON?formatted=true&country=' . $_REQUEST['country'] . '&username=tazor&style=full';
+    $url='http://api.geonames.org/countryInfoJSON?formatted=true&country=' . $_REQUEST['country'] . '&username=tazor&style=full';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -22,7 +22,7 @@
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
 	if(isset($decode['geonames'])){
-		$output['data'] = $decode['geonames'];
+		$output['data'] = $decode['geonames'][0]['capital'];
 	} else {
 		$output['data'] = false;
 	}
