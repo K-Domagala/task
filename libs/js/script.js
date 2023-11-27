@@ -1,3 +1,4 @@
+//Logic for API 1, (Neighbour API).
 $('#submit1').click(function() {
     $('#result').html('Working on it...')
     $.ajax({
@@ -10,7 +11,7 @@ $('#submit1').click(function() {
         success: (result) => {
             let resultString = '';
             if(!result['data']){
-                $('#result').html('No data found. Try selecting a different country');
+                $('#result').html('No data found. Try selecting a different country.');
             } else if(!result['data'][0]){
                 $('#result').html('This country has no neighbours');
             } else {
@@ -27,6 +28,7 @@ $('#submit1').click(function() {
     });
 });
 
+//Logic for API 2, (Capital API).
 $('#submit2').click(() => {
     $('#result').html('Working on it...')
     $.ajax({
@@ -38,9 +40,8 @@ $('#submit2').click(() => {
         },
         success: (result) => {
             if(!result['data']){
-                $('#result').html('No data found. Try selecting a different country');
+                $('#result').html('No data found. Try selecting a different country.');
             } else {
-                console.log(result)
                 $('#result').html(result['data'])
             }
         },
@@ -50,6 +51,32 @@ $('#submit2').click(() => {
     });
 })
 
+//Logic for API 3, (Which Country).
+$('#submit3').click(() => {
+    $('#result').html('Working on it...')
+    $.ajax({
+        url: 'libs/php/search.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            string: $('#api3Input').val()
+        },
+        success: (result) => {
+            if(!result['data']){
+                $('#result').html('No data found. Try selecting a different country.');
+            } else if(result['data']['resultsCount'] == 0){
+                $('#result').html('No places found with this name.');
+            } else {
+                $('#result').html(result['data']['resultsCount'] + ' places found with this name. Top result is in ' + result['data'][0]['countryName'] + '.');
+            }
+        },
+        error: (error) => {
+            $('#result').html(error.responseText)
+        }
+    });
+})
+
+//Retrieve a list of all countries from GeoNames. Used to create a list of countries for the first 2 APIs.
 $(window).on('load', function () {
     if ($('#preloader').length) {
         $('#preloader').delay(1000).fadeOut('slow', function () {
@@ -70,7 +97,7 @@ $(window).on('load', function () {
         },
         error: (error) => {
             console.log(error);
-            console.log('something else went wrong')
+            console.log('something went wrong')
             $('#result').html(error.responseText)
         }
     })
