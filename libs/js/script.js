@@ -32,17 +32,18 @@ $('#submit1').click(function() {
 $('#submit2').click(() => {
     $('#result').html('Working on it...')
     $.ajax({
-        url: 'libs/php/capital.php',
+        url: 'libs/php/wiki.php',
         type: 'POST',
         dataType: 'json',
         data: {
-            country: $('#api2Input').val()
+            string: $('#api2Input').val()
         },
         success: (result) => {
+            console.log(result)
             if(!result['data']){
-                $('#result').html('No data found. Try selecting a different country.');
+                $('#result').html('No data found. Try searching a different location.');
             } else {
-                $('#result').html(result['data'])
+                $('#result').html(result['data']['summary'])
             }
         },
         error: (error) => {
@@ -63,7 +64,7 @@ $('#submit3').click(() => {
         },
         success: (result) => {
             if(!result['data']){
-                $('#result').html('No data found. Try selecting a different country.');
+                $('#result').html('No data found. Try searching a different location.');
             } else if(result['data']['resultsCount'] == 0){
                 $('#result').html('No places found with this name.');
             } else {
@@ -93,7 +94,6 @@ $(window).on('load', function () {
                 response += '<option value=' + result['data'][i]['countryCode'] + '>' + result['data'][i]['countryName'] + '</option>'
             }
             $('#api1Input').html(response)
-            $('#api2Input').html(response)
         },
         error: (error) => {
             console.log(error);
