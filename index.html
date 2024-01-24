@@ -2,87 +2,101 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>IT Career Switch task</title>
+        <title>Gazeteer</title>
         <meta name="author" content="Krystian Domagala">
         <meta name="description" content="Task assigned as part of step 3 of the IT Career Switch web developer course">
-
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="favicon.ico" rel="icon">
         <link href="libs/css/style.css" rel="stylesheet">
+        <link href="libs/css/bootstrap.min.css" rel="stylesheet">
+        <link href="libs/css/leaflet.css" rel="stylesheet">
+        <link href="libs/css/bootstrap-icons-1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     </head>
     <body>
-        <div class="header" id="header">
-            A table of APIs required for my IT Career Switch web developer course.
+        <div class="container-fluid h-100 d-flex flex-column">
+            <!-- Header -->
+            <div class="row">
+                <h1 class="bg-success text-center text-white m-0">Welcome to Gazeteer</h1>
+            </div>
+            <!-- Map container -->
+            <div class="row flex-grow-1 flex-column">
+                <!-- Select box -->
+                <div id="select-container" class="justify-content-center p-0">
+                    <select id="country-select"></select>
+                </div>
+                <!-- Map -->
+                <div id="map" class="flex-grow-1"></div>
+            </div>
+            <!-- Modal button -->
+            <button id='modal-button' type="button" class="btn btn-info position-fixed bottom-0 start-0 m-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Options
+            </button>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Choose what to display on the map.</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-striped">
+                                <!-- Weather Row -->
+                                <tr>
+                                    <td class="text-center align-middle">
+                                        <label class="form-check-label" for="weatherCheckbox">
+                                            <i class="bi bi-cloud-fill text-info fs-4"></i>
+                                        </label>
+                                    </td>
+                                    <td class="align-middle">
+                                        <label class="form-check-label" for="weatherCheckbox">Weather stations</label>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <input class="form-check-input" type="checkbox" id="weatherCheckbox" value="option1" checked>
+                                    </td>
+                                </tr>
+                                <!-- Bank Row -->
+                                <tr>
+                                    <td class="text-center align-middle">
+                                        <label class="form-check-label" for="bankCheckbox">
+                                            <i class="bi bi-cash text-info fs-4"></i>
+                                        </label>
+                                    </td>
+                                    <td class="align-middle">
+                                        <label class="form-check-label" for="bankCheckbox">Banks</label>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <input class="form-check-input" type="checkbox" id="bankCheckbox" value="option1" checked>
+                                    </td>
+                                </tr>
+                                <!-- Airport Row -->
+                                <tr>
+                                    <td class="text-center align-middle">
+                                        <label class="form-check-label" for="airportCheckbox">
+                                            <i class="bi bi-airplane-fill text-info fs-4"></i>
+                                        </label>
+                                    </td>
+                                    <td class="align-middle">
+                                        <label class="form-check-label" for="airportCheckbox">Airports</label>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <input class="form-check-input" type="checkbox" id="airportCheckbox" value="option1" checked>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id=”preloader”></div>
+            <script type="application/javascript" src="libs/js/jquery-3.7.1.min.js"></script>
+            <script type="application/javascript" src="libs/js/leaflet.js"></script>
+            <script type="application/javascript" src="libs/js/bootstrap.min.js"></script>
+            <script type="application/javascript" src="libs/js/script.js"></script>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        API name
-                    </th>
-                    <th>
-                        API description
-                    </th>
-                    <th>
-                        Submit
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        1. Neighbour API
-                    </td>
-                    <td>
-                        This API will return the neighbours of any given country.
-                        <br><br>
-                        <label for="api1Input">Country: </label>
-                        <select id="api1Input">
-                            <option>Loading countries...</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button id="submit1">Run API</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        2. Wikipedia search
-                    </td>
-                    <td>
-                        Returns the first wikipedia entry found for the searched location.
-                        <br><br>
-                        <label for="api2Input">Search: </label>
-                        <input type="text" id="api2Input" placeholder="Paris"/>
-                    </td>
-                    <td>
-                        <button id="submit2">Run API</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        3. Which country
-                    </td>
-                    <td>
-                        Type in the name of a place in the search bar, and it will return which country it's in.
-                        <br><br>
-                        <label for="api3Input">Search: </label>
-                        <input type="text" id="api3Input" placeholder="London"/>
-                    </td>
-                    <td>
-                        <button id="submit3">Run API</button>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td id='result' colspan="3">
-                        Results of the APIs will display here.
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-        <div id=”preloader”></div>
-        <script type="application/javascript" src="libs/js/jquery-3.7.1.min.js"></script>
-        <script type="application/javascript" src="libs/js/script.js"></script>
     </body>
 </html>

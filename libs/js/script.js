@@ -1,4 +1,28 @@
 //Logic for API 1, (Neighbour API).
+
+var satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+
+var street = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+});
+
+var map = L.map('map', {
+    center: [51.505, -0.09],
+    zoom: 13,
+    layers: [street]
+});
+
+var baseMaps = {
+    'Satelite': satelite,
+    'Street': street
+}
+
+var layerControl = L.control.layers(baseMaps).addTo(map);
+
+
+
 $('#submit1').click(function() {
     $('#result').html('Working on it...')
     $.ajax({
