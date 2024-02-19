@@ -4,7 +4,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='http://api.geonames.org/searchJSON?formatted=true&name_equals=' . $_REQUEST['string'] . '&maxRows=1&username=tazor&style=full';
+    $url='http://api.geonames.org/countryInfoJSON?country=' . $_REQUEST['countryCode'] . '&maxRows=1&username=tazor&style=full';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -15,15 +15,14 @@
 
 	curl_close($ch);
 
-	$decode = json_decode($result,true);	
+	$decode = json_decode($result,true);
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
 	if(isset($decode['geonames'])){
-		$output['data'] = $decode['geonames'];
-        $output['data']['resultsCount'] = $decode['totalResultsCount'];
+		$output['data'] = $decode['geonames'][0];
 	} else {
 		$output['data'] = false;
 	}

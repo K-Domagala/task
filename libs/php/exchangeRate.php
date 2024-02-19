@@ -4,7 +4,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='http://api.geonames.org/wikipediaSearchJSON?formatted=true&q=' . $_REQUEST['string'] . '&maxRows=10&username=tazor&style=full';
+    $url='https://openexchangerates.org/api/latest.json?app_id=0705a71917ef4827bdba6713623d508b';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -15,14 +15,14 @@
 
 	curl_close($ch);
 
-	$decode = json_decode($result,true);	
+	$decode = json_decode($result,true);
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	if(isset($decode['geonames'][0])){
-		$output['data'] = $decode['geonames'][0];
+	if(isset($decode)){
+		$output['data'] = $decode['rates'];
 	} else {
 		$output['data'] = false;
 	}

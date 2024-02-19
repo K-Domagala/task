@@ -4,7 +4,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='http://api.geonames.org/countryInfoJSON?formatted=true&orderby=countryName&username=tazor&style=full';
+    $url='http://api.geonames.org/countryInfoJSON?orderby=countryName&username=tazor&style=full';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

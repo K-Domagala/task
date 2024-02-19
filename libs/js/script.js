@@ -1,5 +1,4 @@
-//Logic for API 1, (Neighbour API).
-
+//Map
 var satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 });
@@ -21,103 +20,94 @@ var baseMaps = {
 
 var layerControl = L.control.layers(baseMaps).addTo(map);
 
-
-
-$('#submit1').click(function() {
-    $('#result').html('Working on it...')
-    $.ajax({
-        url: 'libs/php/neighbours.php',
-        type: 'POST',
-        dataType: 'json',
-        data: {
-            country: $('#api1Input').val()
-        },
-        success: (result) => {
-            let resultString = '';
-            if(!result['data']){
-                $('#result').html('No data found. Try selecting a different country.');
-            } else if(!result['data'][0]){
-                $('#result').html('This country has no neighbours');
-            } else {
-                resultString += result['data'][0]['countryName']
-                for(let i = 1; i < result['data'].length; i++){
-                    resultString += ', ' + result['data'][i]['countryName'];
-                }
-                $('#result').html(resultString)
-            }
-        },
-        error: (error) => {
-            $('#result').html(error.responseText)
-        }
-    });
-});
-
-//Logic for API 2, (Capital API).
-$('#submit2').click(() => {
-    $('#result').html('Working on it...')
-    $.ajax({
-        url: 'libs/php/wiki.php',
-        type: 'POST',
-        dataType: 'json',
-        data: {
-            string: $('#api2Input').val()
-        },
-        success: (result) => {
-            console.log(result)
-            if(!result['data']){
-                $('#result').html('No data found. Try searching a different location.');
-            } else {
-                $('#result').html(result['data']['summary'])
-            }
-        },
-        error: (error) => {
-            $('#result').html(error.responseText)
-        }
-    });
+//Handle what happens when a country is selected
+$('#country-select').on('change',function() {
+    const countryCode = this.value;
+    updateInfo(countryCode);
 })
 
-//Logic for API 3, (Which Country).
-$('#submit3').click(() => {
-    $('#result').html('Working on it...')
+var exchangeRate = 1;
+
+//Update info modal for given country
+const updateInfo = (input) => {
+    $('#country-flag').attr('src' , 'https://flagsapi.com/' + input + '/flat/64.png');
     $.ajax({
-        url: 'libs/php/search.php',
+        url: 'libs/php/countryInfo.php',
         type: 'POST',
         dataType: 'json',
-        data: {
-            string: $('#api3Input').val()
+        data:{
+            countryCode: input
         },
         success: (result) => {
-            if(!result['data']){
-                $('#result').html('No data found. Try searching a different location.');
-            } else if(result['data']['resultsCount'] == 0){
-                $('#result').html('No places found with this name.');
-            } else {
-                $('#result').html(result['data']['resultsCount'] + ' places found with this name. Top result is in ' + result['data'][0]['countryName'] + '.');
-            }
+            console.log(result);
+            $('#country-name').html(result.data['countryName']);
+            $('#country-capital').html(result.data['capital']);
+            $('#country-continent').html(result.data['continentName']);
+            var population = new Intl.NumberFormat().format(result.data['population']);
+            $('#country-population').html(population);
+            $('#country-currency').html(result.data['currencyCode']);
+            updateCurrencyName(result.data['currencyCode']);
+            exchangeRate = getExchangeRate(result.data['currencyCode'])
         },
         error: (error) => {
-            $('#result').html(error.responseText)
+            console.log(error.responseText)
         }
-    });
-})
+    })
+}
 
-//Retrieve a list of all countries from GeoNames. Used to create a list of countries for the first 2 APIs.
+//Updates name of currency in all relevant modals
+const updateCurrencyName = (input) => {
+    $.ajax({
+        url: 'libs/php/currency.php',
+        type: 'GET',
+        dataType: 'json',
+        success: (result) => {
+            console.log(result.data[input])
+            $('#country-currency').html(result.data[input] + ' (' + input + ')');
+            $('#currency-name').html(result.data[input] + ' (' + input + ')');
+        },
+        error: (error) => {
+            console.log(error.responseText)
+        }
+    })
+}
+
+//Retrievs the current exchange rate of currency
+let getExchangeRate = (currency) => {
+    $.ajax({
+        url: 'libs/php/exchangeRate.php',
+        type: 'GET',
+        dataType: 'json',
+        success: (result) => {
+            console.log('Exchange rate: ' + result.data[currency])
+            let exchangeRate = new Intl.NumberFormat('en-GB', { style: 'currency', currency}).format(result.data[currency]);
+            $('#exchange-rate').html(exchangeRate);
+            $('#converter-currency').html(currency);
+        },
+        error: (error) => {
+            console.log(error.responseText)
+        }
+    })
+}
+
 $(window).on('load', function () {
     if ($('#preloader').length) {
         $('#preloader').delay(1000).fadeOut('slow', function () {
             $(this).remove();
         });
     }
+    //Retrieve a list of all countries from GeoNames for the select field
     $.ajax({
         url: 'libs/php/countries.php',
         type: 'GET',
         dataType: 'json',
         success: (result) => {
-            let response = ''
+            console.log(result)
+            let response = '<option disabled selected value> -- select a country -- </option>'
             for(let i = 0; i < result['data'].length; i++){
                 response += '<option value=' + result['data'][i]['countryCode'] + '>' + result['data'][i]['countryName'] + '</option>'
             }
-            $('#api1Input').html(response)
+            $('#country-select').html(response)
         },
         error: (error) => {
             console.log(error);

@@ -2,7 +2,7 @@ body {
     height:100vh;
 }
 
-#modal-button{
+#modal-button-container{
     z-index: 1200;
 }
 

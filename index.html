@@ -14,10 +14,12 @@
     </head>
     <body>
         <div class="container-fluid h-100 d-flex flex-column">
+
             <!-- Header -->
             <div class="row">
-                <h1 class="bg-success text-center text-white m-0">Welcome to Gazeteer</h1>
+                <h1 class="bg-info text-center m-0 p-1" id="title">Welcome to Gazeteer</h1>
             </div>
+
             <!-- Map container -->
             <div class="row flex-grow-1 flex-column">
                 <!-- Select box -->
@@ -27,62 +29,59 @@
                 <!-- Map -->
                 <div id="map" class="flex-grow-1"></div>
             </div>
-            <!-- Modal button -->
-            <button id='modal-button' type="button" class="btn btn-info position-fixed bottom-0 start-0 m-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Options
-            </button>
+
+            <!-- Modal buttons -->
+            <div id="modal-button-container" class="position-fixed bottom-0 start-0 m-3">
+                <button id='modal-button' type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#info-modal">
+                    <i class="bi bi-info-circle-fill fs-4"></i>
+                </button>
+                <button id='modal-button' type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#currency-modal">
+                    <i class="bi bi-cash fs-4"></i>
+                </button>
+                <button id='modal-button' type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#weather-modal">
+                    <i class="bi bi-cloud-fill fs-4"></i>
+                </button>
+                <button id='modal-button' type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#Wiki-modal">
+                    <i class="bi bi-wikipedia fs-4"></i>
+                </button>
+                <button id='modal-button' type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#food-modal">
+                    <i class="bi bi-egg-fried fs-4"></i>
+                </button>
+            </div>
             
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+            <!-- Info Modal -->
+            <div class="modal fade" id="info-modal" tabindex="-1" aria-labelledby="Info Modal" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header bg-info">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Choose what to display on the map.</h1>
+                            <h1 class="modal-title fs-5">Information.</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <table class="table table-striped">
-                                <!-- Weather Row -->
                                 <tr>
-                                    <td class="text-center align-middle">
-                                        <label class="form-check-label" for="weatherCheckbox">
-                                            <i class="bi bi-cloud-fill text-info fs-4"></i>
-                                        </label>
-                                    </td>
-                                    <td class="align-middle">
-                                        <label class="form-check-label" for="weatherCheckbox">Weather stations</label>
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <input class="form-check-input" type="checkbox" id="weatherCheckbox" value="option1" checked>
-                                    </td>
+                                    <td>Country flag:</td>
+                                    <td><img src="https://flagsapi.com/GB/flat/64.png" id="country-flag"></td>
                                 </tr>
-                                <!-- Bank Row -->
                                 <tr>
-                                    <td class="text-center align-middle">
-                                        <label class="form-check-label" for="bankCheckbox">
-                                            <i class="bi bi-cash text-info fs-4"></i>
-                                        </label>
-                                    </td>
-                                    <td class="align-middle">
-                                        <label class="form-check-label" for="bankCheckbox">Banks</label>
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <input class="form-check-input" type="checkbox" id="bankCheckbox" value="option1" checked>
-                                    </td>
+                                    <td>Country:</td>
+                                    <td id="country-name">United Kingdom</td>
                                 </tr>
-                                <!-- Airport Row -->
                                 <tr>
-                                    <td class="text-center align-middle">
-                                        <label class="form-check-label" for="airportCheckbox">
-                                            <i class="bi bi-airplane-fill text-info fs-4"></i>
-                                        </label>
-                                    </td>
-                                    <td class="align-middle">
-                                        <label class="form-check-label" for="airportCheckbox">Airports</label>
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <input class="form-check-input" type="checkbox" id="airportCheckbox" value="option1" checked>
-                                    </td>
+                                    <td>Capital:</td>
+                                    <td id="country-capital">London</td>
+                                </tr>
+                                <tr>
+                                    <td>Continent:</td>
+                                    <td id="country-continent">EU</td>
+                                </tr>
+                                <tr>
+                                    <td>Population:</td>
+                                    <td id="country-population">5</td>
+                                </tr>
+                                <tr>
+                                    <td>Currency:</td>
+                                    <td id="country-currency">GBP</td>
                                 </tr>
                             </table>
                         </div>
@@ -92,11 +91,90 @@
                     </div>
                 </div>
             </div>
-            <div id=”preloader”></div>
+
+            <!-- Currency Modal -->
+            <div class="modal fade" id="currency-modal" tabindex="-1" aria-labelledby="Currency Modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info">
+                            <h1 class="modal-title fs-5">Currency converter.</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h3>Current conversion rate for <span id="currency-name">USD</span></h3>
+                            <h4>1 = <span id="exchange-rate">1 USD</span></h4>
+                            <input value='1' type="number" id="usd-input" class="col-3" />
+                            <span class="col-6">USD = </span>
+                            <input value='1' type="number" id="target-input" class="col-3" />
+                            <span id="converter-currency" class="col-6">USD</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Modal -->
+            <div class="modal fade" id="weather-modal" tabindex="-1" aria-labelledby="Weather Modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info">
+                            <h1 class="modal-title fs-5">Weather forecast.</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Some sort of weather forecast.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wiki Modal -->
+            <div class="modal fade" id="Wiki-modal" tabindex="-1" aria-labelledby="Wiki Modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info">
+                            <h1 class="modal-title fs-5">Wikipedia.</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            First part of countries wikipedia page with link to the full page.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Modal -->
+            <div class="modal fade" id="food-modal" tabindex="-1" aria-labelledby="Food Modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info">
+                            <h1 class="modal-title fs-5">Cuisine.</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Information about countries cuisines with link to more information. Button is disabled if there is no cuising info to display.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Javasrcipts -->
             <script type="application/javascript" src="libs/js/jquery-3.7.1.min.js"></script>
             <script type="application/javascript" src="libs/js/leaflet.js"></script>
             <script type="application/javascript" src="libs/js/bootstrap.min.js"></script>
             <script type="application/javascript" src="libs/js/script.js"></script>
+            <div id=”preloader”></div>
         </div>
     </body>
 </html>

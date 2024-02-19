@@ -4,7 +4,7 @@
 
     $executionStartTime = microtime(true);
 
-    $url='http://api.geonames.org/neighboursJSON?formatted=true&country=' . $_REQUEST['country'] . '&username=tazor&style=full';
+    $url='https://openexchangerates.org/api/currencies.json';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -15,14 +15,14 @@
 
 	curl_close($ch);
 
-	$decode = json_decode($result,true);	
+	$decode = json_decode($result,true);
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	if(isset($decode['geonames'])){
-		$output['data'] = $decode['geonames'];
+	if(isset($decode)){
+		$output['data'] = $decode;
 	} else {
 		$output['data'] = false;
 	}
