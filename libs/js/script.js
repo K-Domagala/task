@@ -28,6 +28,18 @@ $('#country-select').on('change',function() {
 
 var exchangeRate = 1;
 
+$('#usd-input').on('change',function() {
+    let newValue = (Math.round(($('#usd-input').val() * exchangeRate) * 100) / 100).toFixed(2)
+    console.log(newValue)
+    $('#target-input').val(newValue);
+})
+
+$('#target-input').on('change',function() {
+    let newValue = (Math.round(($('#target-input').val() / exchangeRate) * 100) / 100).toFixed(2)
+    console.log(newValue)
+    $('#usd-input').val(newValue);
+})
+
 //Update info modal for given country
 const updateInfo = (input) => {
     $('#country-flag').attr('src' , 'https://flagsapi.com/' + input + '/flat/64.png');
@@ -39,7 +51,6 @@ const updateInfo = (input) => {
             countryCode: input
         },
         success: (result) => {
-            console.log(result);
             $('#country-name').html(result.data['countryName']);
             $('#country-capital').html(result.data['capital']);
             $('#country-continent').html(result.data['continentName']);
@@ -47,7 +58,8 @@ const updateInfo = (input) => {
             $('#country-population').html(population);
             $('#country-currency').html(result.data['currencyCode']);
             updateCurrencyName(result.data['currencyCode']);
-            exchangeRate = getExchangeRate(result.data['currencyCode'])
+            getExchangeRate(result.data['currencyCode']);
+            updateWeatherModal(result.data['currencyCode'], result.data['capital']);
         },
         error: (error) => {
             console.log(error.responseText)
@@ -62,7 +74,7 @@ const updateCurrencyName = (input) => {
         type: 'GET',
         dataType: 'json',
         success: (result) => {
-            console.log(result.data[input])
+            exchangeRate = result.data[input]
             $('#country-currency').html(result.data[input] + ' (' + input + ')');
             $('#currency-name').html(result.data[input] + ' (' + input + ')');
         },
@@ -73,16 +85,56 @@ const updateCurrencyName = (input) => {
 }
 
 //Retrievs the current exchange rate of currency
-let getExchangeRate = (currency) => {
+const getExchangeRate = (currency) => {
     $.ajax({
         url: 'libs/php/exchangeRate.php',
         type: 'GET',
         dataType: 'json',
         success: (result) => {
-            console.log('Exchange rate: ' + result.data[currency])
-            let exchangeRate = new Intl.NumberFormat('en-GB', { style: 'currency', currency}).format(result.data[currency]);
-            $('#exchange-rate').html(exchangeRate);
+            exchangeRate = result.data[currency];
+            let formattedExchangeRate = new Intl.NumberFormat('en-GB', { style: 'currency', currency}).format(result.data[currency]);
+            $('#exchange-rate').html(formattedExchangeRate);
             $('#converter-currency').html(currency);
+            $('#target-input').val($('#usd-input').val() * result.data[currency]);
+        },
+        error: (error) => {
+            console.log(error.responseText)
+        }
+    })
+}
+
+//Gets the lat and lon for the selected countries capital
+const updateWeatherModal = (countryCode, capital) => {
+    $.ajax({
+        url: 'libs/php/latlon.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            countryCode,
+            capital
+        },
+        success: (result) => {
+            updateWeather(result.data)
+        },
+        error: (error) => {
+            console.log(error.responseText)
+        }
+    })
+}
+
+//Update weather information for selected countries capital using the geocode
+const updateWeather = (coordinates) => {
+    console.log(coordinates)
+    $.ajax({
+        url: 'libs/php/weather.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            lat: coordinates['lat'],
+            lon: coordinates['lon']
+        },
+        success: (result) => {
+            console.log(result);
         },
         error: (error) => {
             console.log(error.responseText)
